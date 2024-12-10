@@ -4,18 +4,31 @@ author: "Your Name"
 format: html
 ---
 
-## Header 1
-
 ```{r setup}
 #| include: false
+
+library(tidyverse)
+source(here::here("R/functions.R"))
+lipidomics <- read_csv(here::here("data/lipidomics.csv"))
 ```
 
-```{r}
+## Basic statistics
+
+```{r basic-stats}
 # Code chunk
+lipidomics |>
+  group_by(metabolite) |>
+  summarise(across(
+    value,
+    list(
+      mean = mean,
+      sd = sd
+    )
+  )) |>
+  mutate(
+    across(
+      where(is.numeric),
+      ~ round(.x, digits = 1)
+    )
+  )
 ```
-
-## This is poorly formatted
-
--   Definitely should have an empty space above this list.
--   This isn't a list, why not?
-
