@@ -3,3 +3,31 @@ title: "notes"
 format: html
 editor: visual
 ---
+
+```{r setup}
+#| include: false
+
+library(tidyverse)
+source(here::here("R/functions.R"))
+lipidomics <- read_csv(here::here("data/lipidomics.csv"))
+```
+
+## Basic statistics
+
+```{r basic-stats}
+lipidomics |>
+  group_by(metabolite) |>
+  summarise(across(
+    value,
+    list(
+      mean = mean,
+      sd = sd
+    )
+  )) |>
+  mutate( # mutate = creates new columns that are functions of excisting variables
+    across( # across = "given these columns, run this function"
+      where(is.numeric),
+      ~ round(.x, digits = 1)
+    )
+  ) # rounds off the values to 1 digit
+```
