@@ -14,3 +14,8 @@ format: html
 # Code chunk
 ```
 
+## This is poorly formatted
+
+-   Definitely should have an empty space above this list.
+-   This isn't a list, why not?
+
