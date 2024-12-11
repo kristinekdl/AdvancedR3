@@ -7,12 +7,15 @@ Imports:
     ggplot2,
     here,
     knitr,
+    parsnip,
     readxl,
+    recipes,
     rmarkdown,
     snakecase,
     stringr,
     targets,
-    tidyr
+    tidyr,
+    workflows
 Encoding: UTF-8
 Title: AdvancedR3
 Suggests: 
@@ -22,4 +25,5 @@ Suggests:
 URL: https://github.com/kristinekdl/AdvancedR3
 BugReports: https://github.com/kristinekdl/AdvancedR3/issues
 Depends: 
+    tidymodels,
     tidyverse
