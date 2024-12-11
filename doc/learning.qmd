@@ -28,3 +28,29 @@ targets::tar_read(df_stats_by_metabolite) |>
 ```{r}
 tar_read(fig_metabolite_distribution)
 ```
+
+## Building the model
+
+```{r}
+log_reg_specs <- logistic_reg() |>
+  set_engine("glm")
+log_reg_specs
+```
+
+```{r}
+lipidomics |>
+  count(code, metabolite) |> # counts how many people have 'cholesterol' showing up more than once
+  filter(n > 1)
+```
+
+```{r}
+lipidomics_wide <- lipidomics |>
+  mutate(metabolite = snakecase::to_snake_case(metabolite)) |>
+  pivot_wider(
+    names_from = metabolite,
+    values_from = value,
+    values_fn = mean,
+    names_prefix = "metabolite_"
+  )
+lipidomics_wide
+```
