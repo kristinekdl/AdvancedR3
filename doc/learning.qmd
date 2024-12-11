@@ -49,7 +49,11 @@ recipe_specs
 ```
 
 ```{r}
-workflow() |> 
-    add_model(log_reg_specs) |> 
-    add_recipe(recipe_specs)
+model_workflow <- create_model_workflow(
+    logistic_reg() |> 
+        set_engine("glm"),
+    lipidomics_wide |> 
+        create_recipe_spec(metabolite_cholesterol)
+)
+model_workflow
 ```

@@ -85,3 +85,17 @@ create_recipe_spec <- function(data, metabolite_variable) {
     recipes::update_role(class, new_role = "outcome") |>
     recipes::step_normalize(tidyselect::starts_with("metabolite_"))
 }
+
+
+#' Create a workflow object of the model and transformations.
+#'
+#' @param model_specs The model specs.
+#' @param recipe_specs The recipe specs.
+#'
+#' @return A workflow object.
+#'
+create_model_workflow <- function(model_specs, recipe_specs) {
+  workflows::workflow() |>
+    workflows::add_model(model_specs) |>
+    workflows::add_recipe(recipe_specs)
+}
