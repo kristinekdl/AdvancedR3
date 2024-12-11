@@ -48,12 +48,32 @@ recipe_specs <- lipidomics_wide |>
 recipe_specs
 ```
 
-```{r}
+```{r defining the model workflow}
 model_workflow <- create_model_workflow(
-    logistic_reg() |> 
-        set_engine("glm"),
-    lipidomics_wide |> 
-        create_recipe_spec(metabolite_cholesterol)
+  logistic_reg() |>
+    set_engine("glm"),
+  lipidomics_wide |>
+    create_recipe_spec(metabolite_cholesterol)
 )
 model_workflow
+```
+
+```{r fitting the model}
+fitted_model <- model_workflow |>
+  fit(lipidomics_wide)
+
+#' Create a tidy output of the model results.
+#'
+#' @param workflow_fitted_model The model workflow object that has been fitted.
+#'
+#' @return A data frame.
+#'
+tidy_model_output <- function(workflow_fitted_model) {
+  workflow_fitted_model |>
+    workflows::extract_fit_parsnip() |>
+    broom::tidy(exponentiate = TRUE)
+}
+
+fitted_model |> 
+    tidy_model_output()
 ```
