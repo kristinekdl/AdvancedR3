@@ -45,7 +45,7 @@ lipidomics |>
 
 ```{r}
 lipidomics_wide <- lipidomics |>
-  mutate(metabolite = snakecase::to_snake_case(metabolite)) |>
+  column_values_to_snake_case(metabolite) |>
   pivot_wider(
     names_from = metabolite,
     values_from = value,
