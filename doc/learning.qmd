@@ -37,28 +37,19 @@ lipidomics_wide
 ```
 
 ```{r}
-#' A transformation recipe to pre-process the data.
-#'
-#' @param data The lipidomics dataset.
-#' @param metabolite_variable The column of the metabolite variable.
-#'
-#' @return A recipe.
-#'
-create_recipe_spec <- function(data, metabolite_variable) {
-  recipes::recipe(data) |>
-    recipes::update_role(metabolite_cholesterol,
-      age,
-      gender,
-      new_role = "predictor"
-    ) |>
-    recipes::update_role(class, new_role = "outcome") |>
-    recipes::step_normalize(tidyselect::starts_with("metabolite_"))
-}
-create_recipe_spec(lipidomics_wide)
+log_reg_specs <- logistic_reg() |>
+  set_engine("glm")
+log_reg_specs
 ```
 
 ```{r}
 recipe_specs <- lipidomics_wide |>
   create_recipe_spec(metabolite_cholesterol)
 recipe_specs
+```
+
+```{r}
+workflow() |> 
+    add_model(log_reg_specs) |> 
+    add_recipe(recipe_specs)
 ```
