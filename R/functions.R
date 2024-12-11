@@ -37,3 +37,15 @@ plot_distributions <- function(data) {
         ggplot2::geom_histogram() +
         ggplot2::facet_wrap(ggplot2::vars(metabolite), scales = "free")
 }
+
+
+#' Convert a columnøs character values to snakecase format.
+#'
+#' @param data The lipidomics dataset.
+#' @param columns The column you want to convert into the snakecase format.
+#' @return A data frame.
+#'
+column_values_to_snake_case <- function(data, columns) {
+    data |>
+        dplyr::mutate(dplyr::across({{ columns }}, snakecase::to_snake_case))
+}
