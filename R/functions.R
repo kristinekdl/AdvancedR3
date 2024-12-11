@@ -11,7 +11,9 @@ descriptive_stats <- function(data) {
       value,
       list(
         mean = mean,
-        sd = sd
+        sd = sd,
+        median = median,
+        iqr = IQR
       )
     )) |>
     dplyr::mutate(
