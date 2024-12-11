@@ -39,7 +39,7 @@ plot_distributions <- function(data) {
 }
 
 
-#' Convert a columns character values to snakecase format.
+#' Convert a column's character values to snakecase format.
 #'
 #' @param data The lipidomics dataset.
 #' @param columns The column you want to convert into the snakecase format.
@@ -48,4 +48,21 @@ plot_distributions <- function(data) {
 column_values_to_snake_case <- function(data, columns) {
     data |>
         dplyr::mutate(dplyr::across({{ columns }}, snakecase::to_snake_case))
+}
+
+
+#' Convert the metabolite long format into a wider one.
+#'
+#' @param data The lipidomics dataset.
+#'
+#' @return A data frame.
+#'
+metabolites_to_wider <- function(data) {
+    data |>
+        tidyr::pivot_wider(
+            names_from = metabolite,
+            values_from = value,
+            values_fn = mean,
+            names_prefix = "metabolite_"
+        )
 }

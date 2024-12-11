@@ -46,16 +46,11 @@ lipidomics |>
 ```{r}
 lipidomics_wide <- lipidomics |>
   column_values_to_snake_case(metabolite) |>
-  pivot_wider(
-    names_from = metabolite,
-    values_from = value,
-    values_fn = mean,
-    names_prefix = "metabolite_"
-  )
+  metabolites_to_wider()
 lipidomics_wide
 ```
 
-```{r}
+```{r column_values_to_snake_case}
 #' Convert a columnøs character values to snakecase format.
 #'
 #' @param data The lipidomics dataset.
@@ -67,4 +62,23 @@ column_values_to_snake_case <- function(data, columns) {
     dplyr::mutate(dplyr::across({{ columns }}, snakecase::to_snake_case))
 }
 lipidomics |> column_values_to_snake_case(metabolite)
+```
+
+```{r metabolites_to_wider}
+#' Convert the metabolite long format into a wider one.
+#'
+#' @param data The lipidomics dataset.
+#'
+#' @return A data frame.
+#'
+metabolites_to_wider <- function(data) {
+  data |>
+    tidyr::pivot_wider(
+      names_from = metabolite,
+      values_from = value,
+      values_fn = mean,
+      names_prefix = "metabolite_"
+    )
+}
+
 ```
