@@ -39,7 +39,7 @@ plot_distributions <- function(data) {
 }
 
 
-#' Convert a columnøs character values to snakecase format.
+#' Convert a columns character values to snakecase format.
 #'
 #' @param data The lipidomics dataset.
 #' @param columns The column you want to convert into the snakecase format.
