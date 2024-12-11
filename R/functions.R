@@ -32,10 +32,10 @@ descriptive_stats <- function(data) {
 #' @return A ggplot2 graph.
 #'
 plot_distributions <- function(data) {
-    data |>
-        ggplot2::ggplot(ggplot2::aes(x = value)) +
-        ggplot2::geom_histogram() +
-        ggplot2::facet_wrap(ggplot2::vars(metabolite), scales = "free")
+  data |>
+    ggplot2::ggplot(ggplot2::aes(x = value)) +
+    ggplot2::geom_histogram() +
+    ggplot2::facet_wrap(ggplot2::vars(metabolite), scales = "free")
 }
 
 
@@ -46,8 +46,8 @@ plot_distributions <- function(data) {
 #' @return A data frame.
 #'
 column_values_to_snake_case <- function(data, columns) {
-    data |>
-        dplyr::mutate(dplyr::across({{ columns }}, snakecase::to_snake_case))
+  data |>
+    dplyr::mutate(dplyr::across({{ columns }}, snakecase::to_snake_case))
 }
 
 
@@ -58,11 +58,11 @@ column_values_to_snake_case <- function(data, columns) {
 #' @return A data frame.
 #'
 metabolites_to_wider <- function(data) {
-    data |>
-        tidyr::pivot_wider(
-            names_from = metabolite,
-            values_from = value,
-            values_fn = mean,
-            names_prefix = "metabolite_"
-        )
+  data |>
+    tidyr::pivot_wider(
+      names_from = metabolite,
+      values_from = value,
+      values_fn = mean,
+      names_prefix = "metabolite_"
+    )
 }
