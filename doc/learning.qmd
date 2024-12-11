@@ -29,20 +29,6 @@ targets::tar_read(df_stats_by_metabolite) |>
 tar_read(fig_metabolite_distribution)
 ```
 
-## Building the model
-
-```{r}
-log_reg_specs <- logistic_reg() |>
-  set_engine("glm")
-log_reg_specs
-```
-
-```{r}
-lipidomics |>
-  count(code, metabolite) |> # counts how many people have 'cholesterol' showing up more than once
-  filter(n > 1)
-```
-
 ```{r}
 lipidomics_wide <- lipidomics |>
   column_values_to_snake_case(metabolite) |>
@@ -50,35 +36,29 @@ lipidomics_wide <- lipidomics |>
 lipidomics_wide
 ```
 
-```{r column_values_to_snake_case}
-#' Convert a columnøs character values to snakecase format.
+```{r}
+#' A transformation recipe to pre-process the data.
 #'
 #' @param data The lipidomics dataset.
-#' @param columns The column you want to convert into the snakecase format.
-#' @return A data frame.
+#' @param metabolite_variable The column of the metabolite variable.
 #'
-column_values_to_snake_case <- function(data, columns) {
-  data |>
-    dplyr::mutate(dplyr::across({{ columns }}, snakecase::to_snake_case))
+#' @return A recipe.
+#'
+create_recipe_spec <- function(data, metabolite_variable) {
+  recipes::recipe(data) |>
+    recipes::update_role(metabolite_cholesterol,
+      age,
+      gender,
+      new_role = "predictor"
+    ) |>
+    recipes::update_role(class, new_role = "outcome") |>
+    recipes::step_normalize(tidyselect::starts_with("metabolite_"))
 }
-lipidomics |> column_values_to_snake_case(metabolite)
+create_recipe_spec(lipidomics_wide)
 ```
 
-```{r metabolites_to_wider}
-#' Convert the metabolite long format into a wider one.
-#'
-#' @param data The lipidomics dataset.
-#'
-#' @return A data frame.
-#'
-metabolites_to_wider <- function(data) {
-  data |>
-    tidyr::pivot_wider(
-      names_from = metabolite,
-      values_from = value,
-      values_fn = mean,
-      names_prefix = "metabolite_"
-    )
-}
-
+```{r}
+recipe_specs <- lipidomics_wide |>
+  create_recipe_spec(metabolite_cholesterol)
+recipe_specs
 ```
