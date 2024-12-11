@@ -4,3 +4,4 @@
 .Ruserdata
 .Rbuildignore
 data-raw/nmr-omics/
+doc/_targets.yaml

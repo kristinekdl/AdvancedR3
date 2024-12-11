@@ -2,26 +2,25 @@
 title: "Draft Quarto document"
 author: "Your Name"
 format: html
+editor_options: 
+  chunk_output_type: inline
 ---
 
 ```{r setup}
 #| include: false
-
+targets::tar_config_set(store = here::here("_targets"))
 library(tidyverse)
+library(targets)
 source(here::here("R/functions.R"))
-lipidomics <- read_csv(here::here("data/lipidomics.csv"))
+lipidomics <- tar_read(lipidomics)
 ```
 
-## Basic statistics
+## Results
 
-```{r basic-stats}
-# Code chunk
-descriptive_stats(lipidomics)
+```{r}
+tar_read(df_stats_by_metabolite)
 ```
 
-## Plotting
-
-```{r plots}
-#' Plot for basic distribution of metabolite data.
-plot_distributions(lipidomics)
+```{r}
+tar_read(fig_metabolite_distribution)
 ```
