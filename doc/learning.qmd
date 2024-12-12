@@ -70,18 +70,8 @@ model_estimates
 ## Running multiple models
 
 ```{r}
-lipidomics |>
+model_estimates <- lipidomics |>
   calculate_estimates()
-```
 
-## Fixing metabolite names
-
-```{r naming specs}
-lipidomics |>
-  select(metabolite) |>
-  mutate(term = metabolite) |>
-  column_values_to_snake_case(term) |>
-  mutate(term = str_c("metabolite_", term)) |>
-  distinct(term, metabolite) |>
-  right_join(model_estimates, by = "term")
+model_estimates
 ```

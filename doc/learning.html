@@ -242,13 +242,13 @@ Computational engine: glm </code></pre>
 </div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">create_model_workflow</span>(</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">logistic_reg</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>        <span class="fu">set_engine</span>(<span class="st">"glm"</span>),</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    lipidomics_wide <span class="sc">|&gt;</span> </span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>        <span class="fu">create_recipe_spec</span>(metabolite_cholesterol)</span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span> </span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">fit</span>(lipidomics_wide) <span class="sc">|&gt;</span> </span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tidy_model_output</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">logistic_reg</span>() <span class="sc">|&gt;</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">set_engine</span>(<span class="st">"glm"</span>),</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  lipidomics_wide <span class="sc">|&gt;</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">create_recipe_spec</span>(metabolite_cholesterol)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(lipidomics_wide) <span class="sc">|&gt;</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tidy_model_output</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 4 × 5
   term                   estimate std.error statistic p.value
@@ -257,6 +257,68 @@ Computational engine: glm </code></pre>
 2 genderW                   0.493    0.779    -0.907   0.365 
 3 age                       1.01     0.0377    0.183   0.855 
 4 metabolite_cholesterol    2.97     0.458     2.38    0.0175</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>model_estimates <span class="ot">&lt;-</span> lipidomics <span class="sc">|&gt;</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">split_by_metabolite</span>() <span class="sc">|&gt;</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map</span>(generate_model_results) <span class="sc">|&gt;</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list_rbind</span>() <span class="sc">|&gt;</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">str_detect</span>(term, <span class="st">"metabolite_"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: glm.fit: algorithm did not converge</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>model_estimates</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 12 × 5
+   term                                 estimate  std.error statistic p.value
+   &lt;chr&gt;                                   &lt;dbl&gt;      &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;
+ 1 metabolite_cd_cl_3_solvent          8.70e-  2      0.865 -2.82     0.00475
+ 2 metabolite_cholesterol              2.97e+  0      0.458  2.38     0.0175 
+ 3 metabolite_fa_ch_2_ch_2_coo         1.52e+  0      0.387  1.09     0.276  
+ 4 metabolite_lipid_ch_2               2.59e-  3      3.14  -1.90     0.0578 
+ 5 metabolite_lipid_ch_3_1             4.45e+  1      1.41   2.70     0.00697
+ 6 metabolite_lipid_ch_3_2             8.85e-  1      0.361 -0.339    0.734  
+ 7 metabolite_mufa_pufa                4.56e-  1      0.449 -1.75     0.0798 
+ 8 metabolite_phosphatidycholine       1.28e-120 116628.    -0.00237  0.998  
+ 9 metabolite_phosphatidylethanolamine 2.69e+  1      1.32   2.49     0.0129 
+10 metabolite_phospholipids            2.39e- 19  68964.    -0.000622 1.00   
+11 metabolite_pufa                     3.27e+  0      0.560  2.11     0.0345 
+12 metabolite_tms_interntal_standard   5.62e-  2      0.990 -2.91     0.00363</code></pre>
+</div>
+</div>
+</section>
+<section id="running-multiple-models" class="level2">
+<h2 class="anchored" data-anchor-id="running-multiple-models">Running multiple models</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>model_estimates <span class="ot">&lt;-</span> lipidomics <span class="sc">|&gt;</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">calculate_estimates</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: glm.fit: algorithm did not converge</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>model_estimates</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 12 × 6
+   term                         metabolite  estimate std.error statistic p.value
+   &lt;chr&gt;                        &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;
+ 1 metabolite_tms_interntal_st… TMS (inte… 5.62e-  2   9.90e-1 -2.91     0.00363
+ 2 metabolite_cholesterol       Cholester… 2.97e+  0   4.58e-1  2.38     0.0175 
+ 3 metabolite_lipid_ch_3_1      Lipid CH3… 4.45e+  1   1.41e+0  2.70     0.00697
+ 4 metabolite_lipid_ch_3_2      Lipid CH3… 8.85e-  1   3.61e-1 -0.339    0.734  
+ 5 metabolite_lipid_ch_2        Lipid -CH… 2.59e-  3   3.14e+0 -1.90     0.0578 
+ 6 metabolite_fa_ch_2_ch_2_coo  FA -CH2CH… 1.52e+  0   3.87e-1  1.09     0.276  
+ 7 metabolite_pufa              PUFA       3.27e+  0   5.60e-1  2.11     0.0345 
+ 8 metabolite_phosphatidyletha… Phosphati… 2.69e+  1   1.32e+0  2.49     0.0129 
+ 9 metabolite_phosphatidycholi… Phosphati… 1.28e-120   1.17e+5 -0.00237  0.998  
+10 metabolite_phospholipids     Phospholi… 2.39e- 19   6.90e+4 -0.000622 1.00   
+11 metabolite_mufa_pufa         MUFA+PUFA  4.56e-  1   4.49e-1 -1.75     0.0798 
+12 metabolite_cd_cl_3_solvent   CDCl3 (so… 8.70e-  2   8.65e-1 -2.82     0.00475</code></pre>
 </div>
 </div>
 </section>
