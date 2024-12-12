@@ -57,14 +57,31 @@ create_model_workflow(
 ) |>
   fit(lipidomics_wide) |>
   tidy_model_output()
+
+
+model_estimates <- lipidomics |>
+  split_by_metabolite() |>
+  map(generate_model_results) |>
+  list_rbind() |>
+  filter(str_detect(term, "metabolite_"))
+model_estimates
 ```
 
 ## Running multiple models
 
 ```{r}
-lipidomics |> 
-    split_by_metabolite() |> 
-    map(generate_model_results) |> 
-    list_rbind() |> 
-    filter(str_detect(term, "metabolite_"))
+lipidomics |>
+  calculate_estimates()
+```
+
+## Fixing metabolite names
+
+```{r naming specs}
+lipidomics |>
+  select(metabolite) |>
+  mutate(term = metabolite) |>
+  column_values_to_snake_case(term) |>
+  mutate(term = str_c("metabolite_", term)) |>
+  distinct(term, metabolite) |>
+  right_join(model_estimates, by = "term")
 ```
