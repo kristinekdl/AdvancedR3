@@ -29,23 +29,13 @@ targets::tar_read(df_stats_by_metabolite) |>
 tar_read(fig_metabolite_distribution)
 ```
 
+## Building the model
+
 ```{r}
 lipidomics_wide <- lipidomics |>
   column_values_to_snake_case(metabolite) |>
   metabolites_to_wider()
 lipidomics_wide
-```
-
-```{r}
-log_reg_specs <- logistic_reg() |>
-  set_engine("glm")
-log_reg_specs
-```
-
-```{r}
-recipe_specs <- lipidomics_wide |>
-  create_recipe_spec(metabolite_cholesterol)
-recipe_specs
 ```
 
 ```{r defining the model workflow}
@@ -58,33 +48,13 @@ model_workflow <- create_model_workflow(
 model_workflow
 ```
 
-```{r fitting the model}
-fitted_model <- model_workflow |>
-  fit(lipidomics_wide)
-
-#' Create a tidy output of the model results.
-#'
-#' @param workflow_fitted_model The model workflow object that has been fitted.
-#'
-#' @return A data frame.
-#'
-tidy_model_output <- function(workflow_fitted_model) {
-  workflow_fitted_model |>
-    workflows::extract_fit_parsnip() |>
-    broom::tidy(exponentiate = TRUE)
-}
-
-fitted_model |> 
-    tidy_model_output()
-```
-
 ```{r one pipe}
 create_model_workflow(
-    logistic_reg() |> 
-        set_engine("glm"),
-    lipidomics_wide |> 
-        create_recipe_spec(metabolite_cholesterol)
-) |> 
-    fit(lipidomics_wide) |> 
-    tidy_model_output()
+  logistic_reg() |>
+    set_engine("glm"),
+  lipidomics_wide |>
+    create_recipe_spec(metabolite_cholesterol)
+) |>
+  fit(lipidomics_wide) |>
+  tidy_model_output()
 ```

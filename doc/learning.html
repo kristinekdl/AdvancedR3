@@ -186,6 +186,80 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
+<section id="building-the-model" class="level2">
+<h2 class="anchored" data-anchor-id="building-the-model">Building the model</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>lipidomics_wide <span class="ot">&lt;-</span> lipidomics <span class="sc">|&gt;</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">column_values_to_snake_case</span>(metabolite) <span class="sc">|&gt;</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">metabolites_to_wider</span>()</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>lipidomics_wide</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 36 × 16
+   code   gender   age class metabolite_tms_interntal_s…¹ metabolite_cholesterol
+   &lt;chr&gt;  &lt;chr&gt;  &lt;dbl&gt; &lt;chr&gt;                        &lt;dbl&gt;                  &lt;dbl&gt;
+ 1 ERI109 M         25 CT                           208.                   18.6 
+ 2 ERI111 M         39 CT                           219.                   20.8 
+ 3 ERI163 W         58 CT                            57.1                  15.5 
+ 4 ERI375 M         24 CT                            19.2                  10.2 
+ 5 ERI376 M         26 CT                            35.4                  13.5 
+ 6 ERI391 M         31 CT                            30.4                   9.53
+ 7 ERI392 M         24 CT                            21.7                   9.87
+ 8 ERI79  W         26 CT                           185.                   17.6 
+ 9 ERI81  M         52 CT                           207.                   17.0 
+10 ERI83  M         25 CT                           322.                   19.7 
+# ℹ 26 more rows
+# ℹ abbreviated name: ¹​metabolite_tms_interntal_standard
+# ℹ 10 more variables: metabolite_lipid_ch_3_1 &lt;dbl&gt;,
+#   metabolite_lipid_ch_3_2 &lt;dbl&gt;, metabolite_lipid_ch_2 &lt;dbl&gt;,
+#   metabolite_fa_ch_2_ch_2_coo &lt;dbl&gt;, metabolite_pufa &lt;dbl&gt;,
+#   metabolite_phosphatidylethanolamine &lt;dbl&gt;,
+#   metabolite_phosphatidycholine &lt;dbl&gt;, metabolite_phospholipids &lt;dbl&gt;, …</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>model_workflow <span class="ot">&lt;-</span> <span class="fu">create_model_workflow</span>(</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">logistic_reg</span>() <span class="sc">|&gt;</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">set_engine</span>(<span class="st">"glm"</span>),</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  lipidomics_wide <span class="sc">|&gt;</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">create_recipe_spec</span>(metabolite_cholesterol)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>model_workflow</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>══ Workflow ════════════════════════════════════════════════════════════════════
+Preprocessor: Recipe
+Model: logistic_reg()
+
+── Preprocessor ────────────────────────────────────────────────────────────────
+1 Recipe Step
+
+• step_normalize()
+
+── Model ───────────────────────────────────────────────────────────────────────
+Logistic Regression Model Specification (classification)
+
+Computational engine: glm </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">create_model_workflow</span>(</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">logistic_reg</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>        <span class="fu">set_engine</span>(<span class="st">"glm"</span>),</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    lipidomics_wide <span class="sc">|&gt;</span> </span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>        <span class="fu">create_recipe_spec</span>(metabolite_cholesterol)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span> </span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">fit</span>(lipidomics_wide) <span class="sc">|&gt;</span> </span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tidy_model_output</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 5
+  term                   estimate std.error statistic p.value
+  &lt;chr&gt;                     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;
+1 (Intercept)               1.11     1.29      0.0817  0.935 
+2 genderW                   0.493    0.779    -0.907   0.365 
+3 age                       1.01     0.0377    0.183   0.855 
+4 metabolite_cholesterol    2.97     0.458     2.38    0.0175</code></pre>
+</div>
+</div>
+</section>
 
 </main>
 <!-- /main column -->
