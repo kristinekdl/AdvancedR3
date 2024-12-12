@@ -62,8 +62,9 @@ create_model_workflow(
 ## Running multiple models
 
 ```{r}
-lipidomics |>
-  column_values_to_snake_case(metabolite) |>
-  group_split(metabolite) |>
-  map(metabolites_to_wider)
+lipidomics |> 
+    split_by_metabolite() |> 
+    map(generate_model_results) |> 
+    list_rbind() |> 
+    filter(str_detect(term, "metabolite_"))
 ```
