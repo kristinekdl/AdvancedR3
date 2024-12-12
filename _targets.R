@@ -75,5 +75,9 @@ list(
   tar_target(
     name = df_model_estimates,
     command = calculate_estimates(lipidomics)
+  ),
+  tar_target(
+    name = fig_model_estimates,
+    command = plot_estimates(df_model_estimates)
   )
 )

@@ -293,16 +293,9 @@ Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred</code></pre>
 <section id="running-multiple-models" class="level2">
 <h2 class="anchored" data-anchor-id="running-multiple-models">Running multiple models</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>model_estimates <span class="ot">&lt;-</span> lipidomics <span class="sc">|&gt;</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">calculate_estimates</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: glm.fit: algorithm did not converge</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>model_estimates</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>model_estimates <span class="ot">&lt;-</span> <span class="fu">tar_read</span>(df_model_estimates)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>model_estimates</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 12 × 6
    term                         metabolite  estimate std.error statistic p.value
@@ -319,6 +312,21 @@ Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred</code></pre>
 10 metabolite_phospholipids     Phospholi… 2.39e- 19   6.90e+4 -0.000622 1.00   
 11 metabolite_mufa_pufa         MUFA+PUFA  4.56e-  1   4.49e-1 -1.75     0.0798 
 12 metabolite_cd_cl_3_solvent   CDCl3 (so… 8.70e-  2   8.65e-1 -2.82     0.00475</code></pre>
+</div>
+</div>
+</section>
+<section id="visualizing-the-model-estimates" class="level2">
+<h2 class="anchored" data-anchor-id="visualizing-the-model-estimates">Visualizing the model estimates</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>plot_estimates</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>function (results) 
+{
+    ggplot2::ggplot(results, ggplot2::aes(x = estimate, y = metabolite, 
+        xmin = estimate - std.error, xmax = estimate + std.error)) + 
+        ggplot2::geom_pointrange() + ggplot2::coord_fixed(xlim = c(0, 
+        5))
+}</code></pre>
 </div>
 </div>
 </section>
